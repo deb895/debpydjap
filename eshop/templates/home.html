@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% load cart %}
+
+{% block title %}
+Home
+{% endblock title %}
+
+
+{% block body %}
+
+<div class="container">
+ <div id="carouselExampleAutoplaying" class="carousel slide my-2" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item">
+        <img src="{% static "images/banner_1.jpg" %}" class="d-block w-100" alt="img1">
+      </div>
+      <div class="carousel-item">
+        <img src="{% static "images/banner_2.jpg" %}" class="d-block w-100" alt="img2">
+      </div>
+      <div class="carousel-item">
+        <img src="{% static "images/banner_3.jpg" %}" class="d-block w-100" alt="img3">
+      </div>
+      <div class="carousel-item">
+        <img src="{% static "images/banner_4.jpg" %}" class="d-block w-100" alt="img4">
+      </div>
+      <div class="carousel-item active">
+        <img src="{% static "images/banner_5.jpg" %}" class="d-block w-100" alt="img5">
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+ </div>
+</div >  
+
+{% comment %} this is for CATREGORY{% endcomment %}
+
+<div class="container bg-danger-subtle">
+  <div class="row">
+    {% for cat in category %}
+      <div class="col text-center mt-2">
+        <a href="?category_id={{cat.id}}" class="text-dark"><img src="{{cat.category_image.url}}" height=60 width=60>
+          <br>
+          <h6>{{cat.category_name}}</h6>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% comment %} this is for PRODUCTS{% endcomment %}
+<div class="container my-4">
+  <div class="row">
+    {% for pro in product  %}
+    <div class="col text-center ps-5">
+       <div class="card" style="width: 18rem;">
+        <img src="{{pro.product_image.url}}" class="card-img-top my-2" alt="" width=100  height=150>
+                <div class="card-body">
+                 <h5 class="card-title">{{pro.product_name}}</h5>
+                 <p class="card-text">{{pro.product_description}}</p>
+                 <p class="card-text">Rs. {{pro.product_price}}</p>
+                </div> 
+                
+                <!--F O O T E R    PART-->
+
+                <div class="card-footer text-dark bg-warning-subtle">
+                  {% if  pro|isexistsincart:request.session.cart %} 
+                    
+                    <div class="row">
+
+                      <div class="col-3 me-3">
+                        <form action="#" method="post">
+                          {% csrf_token %}
+                          <input type="text" value="{{pro.id}}" name="product_id" hidden>
+                          <input type="text" value="{{pro.id}}" name="remove" hidden>
+                          <input type="submit" value="-" class="btn btn-primary mt-2">
+                        </form>
+                      </div>
+                      
+                      <div class="col text-center mt-2">{{pro|cartquantity:request.session.cart}}</div>
+                      
+                      <div class="col-3 me-3">
+                        <form action="#" method="post">
+                          {% csrf_token %}
+                          <input type="text" value="{{pro.id}}" name="product_id" hidden>
+                          <input type="submit" value="+" class="btn btn-primary mt-2">
+                        </form> 
+                      </div>
+
+                    </div>  
+
+                  {% else %}
+                  <form action="#" method="post">
+                    {% csrf_token %}
+                    <input type="text" value="{{pro.id}}" name="product_id" hidden>
+                    <input type="submit" value="Add to Cart" class="btn btn-success mx-2">
+                  </form>  
+                  {% endif %}
+                  
+                </div>
+        </div>
+       </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock body %}

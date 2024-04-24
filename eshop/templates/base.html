@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        {% block title %}{% endblock title %}
+    </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  </head>
+  
+  <body>
+    {% comment "" %}This   is   NAVBAR{% endcomment %}
+    <header class="p-1 bg-danger-subtle sticky-top mt-2">
+        <div class="container">
+          <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="#" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+              {{request.session.name}}
+            </a>
+    
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+              <li><a href="{% url "home" %}" class="nav-link px-2 text-secondary">Home</a></li>
+              <li><a href="#" class="nav-link px-2 text-secondary">Features</a></li>
+              <li><a href="#" class="nav-link px-2 text-secondary">Pricing</a></li>
+              <li><a href="#" class="nav-link px-2 text-secondary">FAQs</a></li>
+              <li><a href="#" class="nav-link px-2 text-secondary">About</a></li>
+            </ul>
+    
+            <form class="d-flex me-2" role="search">
+              <input class="form-control me-1" name="sch" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-success" type="submit"><i class="bi bi-search"></i></button>
+            </form>
+
+
+            <button type="button" class="btn btn-warning position-relative me-2">
+            <a href="{% url "cart" %}"><i class="bi bi-cart4"></i>
+              {% if  request.session.cart|length %}
+              <span class="position-absolute top-2 start-100 translate-middle badge rounded-pill bg-danger">
+                {{request.session.cart|length}}
+              </span>
+              {% endif %}
+            </a>  
+            </button>
+
+            <div class="text-end">   
+              {% if request.session.name %}
+              <a class="btn btn-outline-primary me-2" href="{% url "logout" %}">Logout<i class="bi bi-box-arrow-right ms-2"></i></a>
+              <a class="btn btn-info mx-2" href="{% url "order" %}">Order</a>
+                
+              {% else %}
+
+              <button type="button" class="btn btn-primary me-1" data-bs-toggle="modal" data-bs-target="#login">Login</button>
+              <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#signup">Sign-up</button>
+
+              {% endif %}
+
+            </div>
+          </div>
+        </div>
+      </header> 
+      {% block body %}{% endblock body %}
+      {% comment %} modal for login {% endcomment %}
+<div class="modal fade" id="login" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Login</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          
+          <form action="{% url "login" %}" method ="post">
+            {% csrf_token %}
+            <div class="row mb-3">
+              <label for="mail" class="col-sm-2 col-form-label">Email</label>
+              <div class="col-sm-10">
+                <input type="email" name="email" class="form-control" id="mail">
+              </div>
+            </div>
+            
+            <div class="row mb-3">
+              <label for="password" class="col-sm-2 col-form-label">Password</label>
+              <div class="col-sm-10">
+                <input type="password" name="pwd" class="form-control" id="password">
+              </div>
+            </div>
+             
+             
+            <button type="submit" class="btn btn-primary">Login</button>
+          
+          </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  {% comment %} modal for SIGNUP{% endcomment %}
+  
+<div class="modal fade" id="signup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Registration</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            
+            <form class="row g-3" action="{% url "registration" %}" method="post">
+                {% csrf_token %}
+                  <div class="col-md-6">
+                  <label for="fnm" class="form-label">First Name</label>
+                  <input type="text" class="form-control" name="fname" id="fnm">
+                  </div>
+                  <div class="col-md-6">
+                  <label for="lnm" class="form-label">Last Name</label>
+                  <input type="text" class="form-control" name="lname" id="lnm">
+                  </div>
+                  <div class="col-md-6">
+                    <label for="ml" class="form-label">Email</label>
+                    <input type="email" class="form-control" name="email" id="ml">
+                  </div>
+                  <div class="col-md-6">
+                    <label for="psd" class="form-label">Password</label>
+                    <input type="password" class="form-control" name="pwd" id="psd">
+                  </div>
+                  <div class="col-md-6">
+                    <label for="mob" class="form-label">Mobile</label>
+                    <input type="number" class="form-control" name="mbl" id="mob">
+                  </div>
+                  <div class="col-md-6">
+                    <label for="" class="form-label">Gender</label>
+                    <br>
+                    <input type="radio" class="form-check-input" name="gender" value="male" id="gen1"> Male
+                    <br>
+                    <input type="radio" class="form-check-input" name="gender" value="female"id="gen2"> Female
+                  </div>
+                  <div class="col-12">
+                   <button type="submit" class="btn btn-outline-success">Submit</button>
+                  </div>
+              </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+    <div class="container-fluid my-4 bg-danger-subtle fixed-bottom">
+      <footer class="py-3 my-4 ">
+        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+          <li class="nav-item"><a href="#" class="nav-link px-2 text-secondary">Home</a></li>
+          <li class="nav-item"><a href="#" class="nav-link px-2 text-secondary">Features</a></li>
+          <li class="nav-item"><a href="#" class="nav-link px-2 text-secondary">Pricing</a></li>
+          <li class="nav-item"><a href="#" class="nav-link px-2 text-secondary">FAQs</a></li>
+          <li class="nav-item"><a href="#" class="nav-link px-2 text-secondary">About</a></li>
+        </ul>
+        <p class="text-center text-secondary">© 2024 Company, Inc</p>
+      </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  </body>
+</html>

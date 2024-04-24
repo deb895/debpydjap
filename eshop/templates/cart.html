@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% load cart %}
+
+{% block title %}
+   Cart
+{% endblock title %}
+
+{% block body %}
+{% if request.session.cart%} 
+ <div class="container my-3 text-center">
+    <table class="table table-info table-striped">
+        <tr>
+          <th>Sno.</th>
+          <th>Product Name</th>
+          <th>Product Image</th>
+          <th>Product Price</th>
+          <th>Quantity</th> 
+          <th>Total Price</th>  
+        </tr>
+        {% for c in product_in_cart %}
+        <tr class="text-center">
+            <td>{{forloop.counter}}</td>
+            <td>{{c.product_name}}</td>
+            <td><img src="{{c.product_image.url}}" width=50 height=50></td>
+            <td>Rs. {{c.product_price}}</td>
+            <td>{{c|cartquantity:request.session.cart}}</td>
+            <td>Rs. {{c|total_price:request.session.cart}}</td>
+        </tr>  
+        {% endfor %}
+        <tr class="text-center">
+            <td colspan=4><h3>PAYABLE AMOUNT</h3></td>
+            <td colspan=1>Rs.{{product_in_cart|payable_amount:request.session.cart}}</td>
+            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#checkoutModal">Checkout
+              </button></td>    
+        </tr>
+    </table>
+
+
+    <div class="modal fade" id="checkoutModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            
+            <div class="modal-body">
+              <form action="{% url "checkout" %}" method="post">
+                {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="formGroupExampleInput" class="form-label">Mobile</label>
+                        <input type="number" class="form-control" name="mobile" id="formGroupExampleInput" placeholder="Enter Mobile Number...">
+                      </div>
+                      <div class="mb-3">
+                        <label for="formGroupExampleInput2" class="form-label">Address</label>
+                        <input type="text" class="form-control" name="address" id="formGroupExampleInput2"
+                        placeholder = "Enter your Address...">
+                      </div>
+                      <button type="submit" class="btn btn-outline-secondary">Checkout</button>
+              </form>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+  </div> 
+  {% else %}
+  <div>
+    <p>Your Cart is Empty, {{request.session.name}}</p>
+  </div>
+  {% endif %}
+{% endblock body %}
